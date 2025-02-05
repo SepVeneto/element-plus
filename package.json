@@ -24,7 +24,7 @@
     "update:version": "sucrase-node scripts/update-version.ts",
     "clean": "pnpm run clean:dist && pnpm run clean --filter ./packages/ --stream",
     "clean:dist": "rimraf dist",
-    "build": "pnpm run start -C internal/build",
+    "build": "pnpm -C internal/build start",
     "build:theme": "pnpm run build -C packages/theme-chalk",
     "format": "prettier --write .",
     "lint": "eslint . --ext .vue,.js,.ts,.jsx,.tsx,.md,.json --max-warnings 0 && pretty-quick --check --branch dev",
