@@ -40,7 +40,7 @@ export default class Store {
   }
 
   getFlattedNodes(leafOnly: boolean) {
-    return leafOnly ? this.leafNodes : this.allNodes
+    return leafOnly ? flatNodes(this.nodes, true) : this.allNodes
   }
 
   appendNode(nodeData: CascaderOption, parentNode?: Node) {
