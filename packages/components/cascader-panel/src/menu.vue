@@ -42,14 +42,7 @@
 </template>
 
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  getCurrentInstance,
-  inject,
-  ref,
-  watch,
-} from 'vue'
+import { computed, defineComponent, getCurrentInstance, inject, ref } from 'vue'
 import ElScrollbar from '@element-plus/components/scrollbar'
 import { useLocale, useNamespace } from '@element-plus/hooks'
 import { generateId } from '@element-plus/utils'
