@@ -47,9 +47,6 @@ export const copyFullStyle = async () => {
 }
 
 export default series(
-  withTaskName('clean', () => run('pnpm run clean')),
-  withTaskName('createOutput', () => mkdir(epOutput, { recursive: true })),
-
   parallel(
     runTask('buildModules'),
     runTask('buildFullBundle'),
