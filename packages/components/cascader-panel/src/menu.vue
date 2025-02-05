@@ -9,6 +9,13 @@
     @mousemove="handleMouseMove"
     @mouseleave="clearHoverZone"
   >
+    <el-cascader-node-all
+      v-if="panel.config.needAll"
+      :model-value="isCheckedAll"
+      :indeterminate="isIndeterminate"
+      is-node-leaf
+      @change="onChange"
+    />
     <el-cascader-node
       v-for="node in nodes"
       :key="node.uid"
@@ -49,6 +56,7 @@ import { useId, useLocale, useNamespace } from '@element-plus/hooks'
 import { Loading } from '@element-plus/icons-vue'
 import ElIcon from '@element-plus/components/icon'
 import ElCascaderNode from './node.vue'
+import ElCascaderNodeAll from './node.all.vue'
 import { CASCADER_PANEL_INJECTION_KEY } from './types'
 
 import type { default as CascaderNode } from './node'
@@ -59,6 +67,7 @@ export default defineComponent({
   name: 'ElCascaderMenu',
 
   components: {
+    ElCascaderNodeAll,
     Loading,
     ElIcon,
     ElScrollbar,
@@ -133,7 +142,32 @@ export default defineComponent({
       hoverZone.value.innerHTML = ''
       clearHoverTimer()
     }
+
+    const checkedList = computed(() => {
+      if (!panel?.config.needAll) return []
+      return props.nodes.filter((item) => item.checked)
+    })
+    const isCheckedAll = computed(() => {
+      return checkedList.value.length === props.nodes.length
+    })
+    const isIndeterminate = computed(() => {
+      return (
+        checkedList.value.length > 0 &&
+        checkedList.value.length < props.nodes.length
+      )
+    })
+    function onChange(checked) {
+      props.nodes.forEach((node) => {
+        if (checked === node.checked) return
+
+        node.checked = checked
+        panel.handleCheckChange(node, checked)
+      })
+    }
     return {
+      isIndeterminate,
+      isCheckedAll,
+      onChange,
       ns,
       panel,
       hoverZone,
