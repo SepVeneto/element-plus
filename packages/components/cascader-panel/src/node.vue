@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject } from 'vue'
+import { computed, defineComponent, inject, watch } from 'vue'
 import ElCheckbox from '@element-plus/components/checkbox'
 import ElRadio from '@element-plus/components/radio'
 import ElIcon from '@element-plus/components/icon'
@@ -87,6 +87,7 @@ export default defineComponent({
   },
 
   props: {
+    isNodeLeaf: Boolean,
     node: {
       type: Object as PropType<CascaderNode>,
       required: true,
@@ -105,7 +106,8 @@ export default defineComponent({
     const checkStrictly = computed(() => panel.config.checkStrictly)
     const checkedNodeId = computed(() => panel.checkedNodes[0]?.uid)
     const isDisabled = computed(() => props.node.isDisabled)
-    const isLeaf = computed(() => props.node.isLeaf)
+    const isLeaf = computed(() => props.isNodeLeaf)
+
     const expandable = computed(
       () => (checkStrictly.value && !isLeaf.value) || !isDisabled.value
     )
