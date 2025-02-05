@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, watch } from 'vue'
+import { computed, defineComponent, inject } from 'vue'
 import ElCheckbox from '@element-plus/components/checkbox'
 import ElRadio from '@element-plus/components/radio'
 import ElIcon from '@element-plus/components/icon'
@@ -116,10 +116,10 @@ export default defineComponent({
     // only useful in check-strictly mode
     const inCheckedPath = computed(() => false)
 
-    const isInPath = (node: CascaderNode) => {
-      const { level, uid } = props.node
-      return node?.pathNodes[level - 1]?.uid === uid
-    }
+    // const isInPath = (node: CascaderNode) => {
+    //   const { level, uid } = props.node
+    //   return node?.pathNodes[level - 1]?.uid === uid
+    // }
 
     const doExpand = () => {
       if (inExpandingPath.value) return
