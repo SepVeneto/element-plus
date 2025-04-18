@@ -21,9 +21,15 @@ async function main() {
   consola.debug(chalk.yellow(`Updating package.json for element-plus`))
 
   const pkgs = Object.fromEntries(
-    (await getWorkspacePackages()).map((pkg) => [pkg.manifest.name!, pkg])
+    (await getWorkspacePackages()).map((pkg, i) => {
+      if (i === 0) {
+        console.log(pkg)
+      }
+      return [pkg.manifest.name!, pkg]
+    })
   )
-  const elementPlus = pkgs['element-plus'] || pkgs['@element-plus/nightly']
+  const elementPlus =
+    pkgs['@rx-frontend/element-plus'] || pkgs['@element-plus/nightly']
   const eslintConfig = pkgs['@element-plus/eslint-config']
   const metadata = pkgs['@element-plus/metadata']
 
