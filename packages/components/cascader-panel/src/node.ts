@@ -47,6 +47,7 @@ export interface CascaderProps {
   expandable?: string | isExpandable
   leaf?: string | isLeaf
   hoverThreshold?: number
+  needAll?: boolean
 }
 
 export type Nullable<T> = null | T

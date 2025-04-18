@@ -2,7 +2,7 @@
   <li
     role="menuitem"
     :aria-haspopup="!isLeaf"
-    :aria-owns="isLeaf ? null : menuId"
+    :aria-owns="isLeaf ? undefined : menuId"
     :aria-expanded="inExpandingPath"
     :tabindex="expandable ? -1 : undefined"
     :class="[
@@ -166,7 +166,7 @@ export default defineComponent({
       }
     }
 
-    const handleSelectCheck = (checked: boolean) => {
+    const handleSelectCheck = (checked: any) => {
       if (checkStrictly.value) {
         doCheck(checked)
         if (props.node.loaded) {

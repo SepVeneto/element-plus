@@ -77,6 +77,7 @@ export const DefaultProps: CascaderConfig = {
   disabled: 'disabled',
   expandable: 'expandable',
   hoverThreshold: 500,
+  needAll: false,
 }
 
 export const useCascaderConfig = (props: { props: CascaderProps }) => {

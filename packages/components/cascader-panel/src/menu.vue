@@ -149,7 +149,7 @@ export default defineComponent({
         checkedList.value.length < props.nodes.length
       )
     })
-    function onChange(checked) {
+    function onChange(checked: boolean) {
       props.nodes
         .filter((node) => !node.isDisabled)
         .forEach((node) => {
