@@ -150,12 +150,14 @@ export default defineComponent({
       )
     })
     function onChange(checked) {
-      props.nodes.forEach((node) => {
-        if (checked === node.checked) return
+      props.nodes
+        .filter((node) => !node.isDisabled)
+        .forEach((node) => {
+          if (checked === node.checked) return
 
-        node.checked = checked
-        panel.handleCheckChange(node, checked)
-      })
+          node.checked = checked
+          panel.handleCheckChange(node, checked)
+        })
     }
     return {
       isIndeterminate,
