@@ -106,10 +106,20 @@ export default defineComponent({
     const checkStrictly = computed(() => panel.config.checkStrictly)
     const checkedNodeId = computed(() => panel.checkedNodes[0]?.uid)
     const isDisabled = computed(() => props.node.isDisabled)
+    const isExpandable = computed(() => props.node.isExpandable)
     const isLeaf = computed(() => props.isNodeLeaf)
 
     const expandable = computed(
-      () => (checkStrictly.value && !isLeaf.value) || !isDisabled.value
+      // () => (checkStrictly.value && !isLeaf.value) || !isDisabled.value
+      () => {
+        if (checkStrictly.value && !isLeaf.value) {
+          return true
+        } else if (isLeaf.value) {
+          return !isDisabled.value
+        } else {
+          return isExpandable.value
+        }
+      }
     )
     const inExpandingPath = computed(() => isInPath(panel.expandingNode!))
     // only useful in check-strictly mode
