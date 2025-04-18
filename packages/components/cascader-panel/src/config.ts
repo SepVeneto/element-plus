@@ -34,6 +34,7 @@ export const DefaultProps: CascaderConfig = {
   children: 'children',
   leaf: 'leaf',
   disabled: 'disabled',
+  expandable: 'expandable',
   hoverThreshold: 500,
 }
 
