@@ -204,7 +204,9 @@ export default defineComponent({
     const calculateCheckedValue = () => {
       const { checkStrictly, multiple } = config.value
       const oldNodes = checkedNodes.value
-      const newNodes = getCheckedNodes(!checkStrictly)!
+      const newNodes = getCheckedNodes(
+        !checkStrictly || checkStrictly === 'forward'
+      )!
       // ensure the original order
       const nodes = sortByOriginalOrder(oldNodes, newNodes)
       const values = nodes.map((node) => node.valueByOption)

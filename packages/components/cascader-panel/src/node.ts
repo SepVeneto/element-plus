@@ -36,7 +36,7 @@ export interface CascaderOption extends Record<string, unknown> {
 export interface CascaderProps {
   expandTrigger?: ExpandTrigger
   multiple?: boolean
-  checkStrictly?: boolean
+  checkStrictly?: boolean | 'forward'
   emitPath?: boolean
   lazy?: boolean
   lazyLoad?: LazyLoad
@@ -249,13 +249,15 @@ class Node {
 
     const { checkStrictly, multiple } = this.config
 
-    if (checkStrictly || !multiple) {
+    // 过滤掉forward的情况
+    if (checkStrictly === true || !multiple) {
       this.checked = checked
     } else {
+      const shouldEmit = checkStrictly === false
       // bottom up to unify the calculation of the indeterminate state
       this.broadcast('check', checked)
       this.setCheckState(checked)
-      this.emit('check')
+      shouldEmit && this.emit('check')
     }
   }
 }
