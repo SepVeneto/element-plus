@@ -7,7 +7,7 @@
     :tabindex="expandable ? -1 : undefined"
     :class="[
       ns.b(),
-      ns.is('selectable', checkStrictly),
+      ns.is('selectable', !!checkStrictly),
       ns.is('active', modelValue),
       ns.is('disabled', !expandable),
       inExpandingPath && 'in-active-path',
