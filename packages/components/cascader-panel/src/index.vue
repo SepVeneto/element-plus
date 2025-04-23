@@ -87,7 +87,13 @@ export default defineComponent({
     renderLabel: Function as PropType<RenderLabel>,
   },
 
-  emits: [UPDATE_MODEL_EVENT, CHANGE_EVENT, 'close', 'expand-change'],
+  emits: [
+    UPDATE_MODEL_EVENT,
+    CHANGE_EVENT,
+    'close',
+    'expand-change',
+    'current-change',
+  ],
 
   setup(props, { emit, slots }) {
     // for interrupt sync check status in lazy mode
@@ -187,6 +193,15 @@ export default defineComponent({
         !multiple &&
         !normalizeCheckStrictly(checkStrictly) &&
         expandParentNode(node)
+
+      emit('current-change', node, checked)
+    }
+
+    const setCheckedNodes = (nodes: CascaderNode[], checked: boolean) => {
+      nodes.forEach((node) => {
+        node.doCheck(checked)
+      })
+      calculateCheckedValue()
     }
 
     const expandParentNode = (node) => {
@@ -399,6 +414,7 @@ export default defineComponent({
        * @description get an array of currently selected node,(leafOnly) whether only return the leaf checked nodes, default is `false`
        */
       getCheckedNodes,
+      setCheckedNodes,
       /**
        * @description clear checked nodes
        */
