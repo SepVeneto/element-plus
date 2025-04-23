@@ -1,5 +1,6 @@
 <template>
   <li
+    v-show="node.isVisible"
     :id="`${menuId}-${node.uid}`"
     role="menuitem"
     :aria-haspopup="!isLeaf"

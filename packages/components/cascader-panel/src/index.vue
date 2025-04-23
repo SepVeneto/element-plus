@@ -69,7 +69,10 @@ import type {
   RenderLabel,
 } from './node'
 
-import type { ElCascaderPanelContext } from './types'
+import type {
+  CascaderPanelFilterFunction,
+  ElCascaderPanelContext,
+} from './types'
 
 export default defineComponent({
   name: 'ElCascaderPanel',
@@ -80,6 +83,7 @@ export default defineComponent({
 
   props: {
     ...CommonProps,
+    filterNodeMethod: Function as PropType<CascaderPanelFilterFunction>,
     border: {
       type: Boolean,
       default: true,
@@ -102,7 +106,7 @@ export default defineComponent({
     const ns = useNamespace('cascader')
     const config = useCascaderConfig(props)
 
-    let store: Nullable<Store> = null
+    const store = ref<Store>()
     const initialLoaded = ref(true)
     const menuList = ref<any[]>([])
     const checkedValue = ref<Nullable<CascaderValue>>(null)
@@ -118,15 +122,15 @@ export default defineComponent({
       const cfg = config.value
 
       manualChecked = false
-      store = new Store(options, cfg)
-      menus.value = [store.getNodes()]
+      store.value = new Store(options, cfg, props.filterNodeMethod)
+      menus.value = [store.value.getNodes()]
 
       if (cfg.lazy && isEmpty(props.options)) {
         initialLoaded.value = false
         lazyLoad(undefined, (list) => {
           if (list) {
-            store = new Store(list, cfg)
-            menus.value = [store.getNodes()]
+            store.value = new Store(list, cfg)
+            menus.value = [store.value.getNodes()]
           }
           initialLoaded.value = true
           syncCheckedValue(false, true)
@@ -144,7 +148,7 @@ export default defineComponent({
       const resolve = (dataList: CascaderOption[]) => {
         const _node = node as Node
         const parent = _node.root ? null : _node
-        dataList && store?.appendNodes(dataList, parent as any)
+        dataList && store.value?.appendNodes(dataList, parent as any)
         _node.loading = false
         _node.loaded = true
         _node.childrenData = _node.childrenData || []
@@ -212,7 +216,7 @@ export default defineComponent({
     }
 
     const getFlattedNodes = (leafOnly: boolean) => {
-      return store?.getFlattedNodes(leafOnly)
+      return store.value?.getFlattedNodes(leafOnly)
     }
 
     const getCheckedNodes = (leafOnly: boolean) => {
@@ -255,7 +259,7 @@ export default defineComponent({
           flattenDeep(castArray(modelValue))
         )
         const nodes = values
-          .map((val) => store?.getNodeByValue(val))
+          .map((val) => store.value?.getNodeByValue(val))
           .filter((node) => !!node && !node.loaded && !node.loading) as Node[]
 
         if (nodes.length) {
@@ -268,7 +272,7 @@ export default defineComponent({
       } else {
         const values = multiple ? castArray(modelValue) : [modelValue]
         const nodes = unique(
-          values.map((val) => store?.getNodeByValue(val, leafOnly))
+          values.map((val) => store.value?.getNodeByValue(val, leafOnly))
         ) as Node[]
         syncMenuState(nodes, forced)
         checkedValue.value = cloneDeep(modelValue)
@@ -285,7 +289,7 @@ export default defineComponent({
         (node) =>
           !!node && (normalizeCheckStrictly(checkStrictly) || node.isLeaf)
       )
-      const oldExpandingNode = store?.getSameNode(expandingNode.value!)
+      const oldExpandingNode = store.value?.getSameNode(expandingNode.value!)
       const newExpandingNode =
         (reserveExpandingState && oldExpandingNode) || newNodes[0]
 
@@ -402,6 +406,13 @@ export default defineComponent({
 
     onMounted(() => !isEmpty(props.modelValue) && syncCheckedValue())
 
+    function filter(value) {
+      if (!props.filterNodeMethod) {
+        throw new Error('[Tree] filterNodeMethod is required when filter')
+      }
+      store.value.filter(value)
+    }
+
     return {
       ns,
       menuList,
@@ -410,6 +421,7 @@ export default defineComponent({
       handleKeyDown,
       handleCheckChange,
       getFlattedNodes,
+      filter,
       /**
        * @description get an array of currently selected node,(leafOnly) whether only return the leaf checked nodes, default is `false`
        */

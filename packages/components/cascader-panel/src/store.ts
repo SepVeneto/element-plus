@@ -1,6 +1,8 @@
+import { nextTick } from 'vue'
 import { isEqual } from 'lodash-unified'
 import Node from './node'
 
+import { CascaderPanelFilterFunction } from './types'
 import type { Nullable } from '@element-plus/utils'
 import type {
   CascaderConfig,
@@ -25,14 +27,54 @@ export default class Store {
   readonly nodes: Node[]
   readonly allNodes: Node[]
   readonly leafNodes: Node[]
+  readonly filterFn: CascaderPanelFilterFunction
 
-  constructor(data: CascaderOption[], readonly config: CascaderConfig) {
+  constructor(
+    data: CascaderOption[],
+    readonly config: CascaderConfig,
+    filterFn: CascaderPanelFilterFunction
+  ) {
     const nodes = (data || []).map(
       (nodeData) => new Node(nodeData, this.config)
     )
     this.nodes = nodes
     this.allNodes = flatNodes(nodes, false)
     this.leafNodes = flatNodes(nodes, true)
+    this.filterFn = filterFn
+  }
+
+  filter(value: any) {
+    const filterFn = this.filterFn
+    // const lazy = this.config.lazy
+
+    const traverse = async function (node: Node) {
+      const childNodes = node.children
+
+      for (const [index, child] of childNodes.entries()) {
+        child.visible = filterFn.call(child, value, child.data, child)
+        if (index % 80 === 0 && index > 0) {
+          await nextTick()
+        }
+        traverse(child)
+      }
+
+      if (!node.visible && childNodes.length) {
+        let allHidden = true
+        allHidden = !childNodes.some((child) => child.visible)
+
+        node.visible = allHidden === false
+      }
+
+      // if (!value) return
+
+      // if (node.visible && !node.isLeaf) {
+      //   if (!lazy || node.loaded) {
+      //     node.
+      //   }
+      // }
+    }
+
+    traverse({ children: this.nodes } as Node)
   }
 
   getNodes() {

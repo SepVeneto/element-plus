@@ -17,6 +17,11 @@ export type CascaderValue =
   | CascaderNodePathValue
   | (CascaderNodeValue | CascaderNodePathValue)[]
 export type CascaderConfig = Required<CascaderProps>
+export type CascaderPanelFilterFunction = (
+  search: string,
+  data: CascaderNode['data'],
+  child: CascaderNode
+) => boolean
 export type isDisabled = (data: CascaderOption, node: CascaderNode) => boolean
 export type isLeaf = (data: CascaderOption, node: CascaderNode) => boolean
 export type Resolve = (dataList?: CascaderOption[]) => void

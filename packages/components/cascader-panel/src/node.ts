@@ -81,6 +81,11 @@ class Node {
   text: string
   loaded: boolean
   /**
+   * Is it visible
+   * @default true
+   */
+  visible = true
+  /**
    * Is it checked
    *
    * @default false
@@ -135,6 +140,9 @@ class Node {
     )
   }
 
+  get isVisible(): boolean {
+    return this.visible
+  }
   get isLeaf(): boolean {
     const { data, config, childrenData, loaded } = this
     const { lazy, leaf } = config
