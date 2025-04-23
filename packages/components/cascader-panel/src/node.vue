@@ -69,6 +69,7 @@ import { useNamespace } from '@element-plus/hooks'
 import { ArrowRight, Check, Loading } from '@element-plus/icons-vue'
 import NodeContent from './node-content'
 import { CASCADER_PANEL_INJECTION_KEY } from './types'
+import { normalizeCheckStrictly } from './utils'
 import type { default as CascaderNode } from './node'
 import type { PropType } from 'vue'
 import type { CheckboxValueType } from '@element-plus/components/checkbox'
@@ -103,7 +104,9 @@ export default defineComponent({
     const ns = useNamespace('cascader-node')
     const isHoverMenu = computed(() => panel.isHoverMenu)
     const multiple = computed(() => panel.config.multiple)
-    const checkStrictly = computed(() => panel.config.checkStrictly)
+    const checkStrictly = computed(() =>
+      normalizeCheckStrictly(panel.config.checkStrictly)
+    )
     const checkedNodeId = computed(() => panel.checkedNodes[0]?.uid)
     const isDisabled = computed(() => props.node.isDisabled)
     const isExpandable = computed(() => props.node.isExpandable)

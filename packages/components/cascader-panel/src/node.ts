@@ -6,6 +6,7 @@ import {
   isFunction,
   isUndefined,
 } from '@element-plus/utils'
+import { normalizeCheckStrictly } from './utils'
 import type { VNode } from 'vue'
 
 export type CascaderNodeValue = string | number
@@ -130,7 +131,10 @@ class Node {
     const isDisabled = isFunction(disabled)
       ? disabled(data, this)
       : !!data[disabled]
-    return isDisabled || (!checkStrictly && parent?.isDisabled)
+    return (
+      isDisabled ||
+      (!normalizeCheckStrictly(checkStrictly) && parent?.isDisabled)
+    )
   }
 
   get isExpandable(): boolean {
@@ -147,7 +151,9 @@ class Node {
     const isExpandable = isFunction(expandable)
       ? expandable(data, this)
       : isTrue(data[expandable])
-    const res = isExpandable || (!checkStrictly && !parent?.isExpandable)
+    const res =
+      isExpandable ||
+      (!normalizeCheckStrictly(checkStrictly) && !parent?.isExpandable)
     return res
     // return (
     //   isTrue(isExpandable) || (!checkStrictly && isTrue(parent?.isExpandable))
@@ -250,7 +256,10 @@ class Node {
     const { checkStrictly, multiple } = this.config
 
     // 过滤掉forward的情况
-    if (checkStrictly === true || !multiple) {
+    if (
+      checkStrictly !== 'forward' &&
+      (normalizeCheckStrictly(checkStrictly) || !multiple)
+    ) {
       this.checked = checked
     } else {
       const shouldEmit = checkStrictly === false

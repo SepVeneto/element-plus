@@ -1,5 +1,5 @@
 import { isLeaf } from '@element-plus/utils'
-import type { default as CascaderNode } from './node'
+import type { CascaderConfig, default as CascaderNode } from './node'
 
 export const getMenuIndex = (el: HTMLElement) => {
   if (!el) return 0
@@ -37,4 +37,14 @@ export const sortByOriginalOrder = (
   res.push(...newNodesCopy)
 
   return res
+}
+
+export const normalizeCheckStrictly = (
+  checkStrictly: CascaderConfig['checkStrictly']
+) => {
+  // 正向约束视为没有关联关系
+  if (checkStrictly === 'forward') {
+    return true
+  }
+  return !!checkStrictly
 }

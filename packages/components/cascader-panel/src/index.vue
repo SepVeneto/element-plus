@@ -51,7 +51,12 @@ import ElCascaderMenu from './menu.vue'
 import Store from './store'
 import Node from './node'
 import { CommonProps, useCascaderConfig } from './config'
-import { checkNode, getMenuIndex, sortByOriginalOrder } from './utils'
+import {
+  checkNode,
+  getMenuIndex,
+  normalizeCheckStrictly,
+  sortByOriginalOrder,
+} from './utils'
 import { CASCADER_PANEL_INJECTION_KEY } from './types'
 
 import type { PropType } from 'vue'
@@ -174,8 +179,14 @@ export default defineComponent({
       !multiple && oldNode?.doCheck(false)
       node.doCheck(checked)
       calculateCheckedValue()
-      emitClose && !multiple && !checkStrictly && emit('close')
-      !emitClose && !multiple && !checkStrictly && expandParentNode(node)
+      emitClose &&
+        !multiple &&
+        !normalizeCheckStrictly(checkStrictly) &&
+        emit('close')
+      !emitClose &&
+        !multiple &&
+        !normalizeCheckStrictly(checkStrictly) &&
+        expandParentNode(node)
     }
 
     const expandParentNode = (node) => {
@@ -204,9 +215,7 @@ export default defineComponent({
     const calculateCheckedValue = () => {
       const { checkStrictly, multiple } = config.value
       const oldNodes = checkedNodes.value
-      const newNodes = getCheckedNodes(
-        !checkStrictly || checkStrictly === 'forward'
-      )!
+      const newNodes = getCheckedNodes(!normalizeCheckStrictly(checkStrictly))!
       // ensure the original order
       const nodes = sortByOriginalOrder(oldNodes, newNodes)
       const values = nodes.map((node) => node.valueByOption)
@@ -217,7 +226,7 @@ export default defineComponent({
     const syncCheckedValue = (loaded = false, forced = false) => {
       const { modelValue } = props
       const { lazy, multiple, checkStrictly } = config.value
-      const leafOnly = !checkStrictly
+      const leafOnly = !normalizeCheckStrictly(checkStrictly)
 
       if (
         !initialLoaded.value ||
@@ -258,7 +267,8 @@ export default defineComponent({
       const { checkStrictly } = config.value
       const oldNodes = checkedNodes.value
       const newNodes = newCheckedNodes.filter(
-        (node) => !!node && (checkStrictly || node.isLeaf)
+        (node) =>
+          !!node && (normalizeCheckStrictly(checkStrictly) || node.isLeaf)
       )
       const oldExpandingNode = store?.getSameNode(expandingNode.value!)
       const newExpandingNode =
