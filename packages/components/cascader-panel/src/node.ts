@@ -18,7 +18,6 @@ export type CascaderValue =
 export type CascaderConfig = Required<CascaderProps>
 export type ExpandTrigger = 'click' | 'hover'
 export type isDisabled = (data: CascaderOption, node: Node) => boolean
-export type isExpandable = (data: CascaderOption, node: Node) => boolean
 export type isLeaf = (data: CascaderOption, node: Node) => boolean
 export type Resolve = (dataList?: CascaderOption[]) => void
 export type LazyLoad = (node: Node, resolve: Resolve) => void
@@ -45,7 +44,6 @@ export interface CascaderProps {
   label?: string
   children?: string
   disabled?: string | isDisabled
-  expandable?: string | isExpandable
   leaf?: string | isLeaf
   hoverThreshold?: number
   needAll?: boolean
@@ -135,29 +133,6 @@ class Node {
       isDisabled ||
       (!normalizeCheckStrictly(checkStrictly) && parent?.isDisabled)
     )
-  }
-
-  get isExpandable(): boolean {
-    const { data, parent, config } = this
-    const { multiple, expandable, checkStrictly } = config
-    // 只有多选的才区分展开和选中行为
-    if (!multiple) return !this.isDisabled
-
-    function isTrue(val?: any) {
-      if (val == null) return true
-      return !!val
-    }
-
-    const isExpandable = isFunction(expandable)
-      ? expandable(data, this)
-      : isTrue(data[expandable])
-    const res =
-      isExpandable ||
-      (!normalizeCheckStrictly(checkStrictly) && !parent?.isExpandable)
-    return res
-    // return (
-    //   isTrue(isExpandable) || (!checkStrictly && isTrue(parent?.isExpandable))
-    // )
   }
 
   get isLeaf(): boolean {

@@ -56,7 +56,6 @@ const DISABLED_OPTIONS = [
     value: 'beijing',
     label: 'beijing',
     disabled: true,
-    expandable: false,
   },
   {
     value: 'zhejiang',

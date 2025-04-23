@@ -75,7 +75,9 @@ export const DefaultProps: CascaderConfig = {
    * @description specify which key of node object is used as the node's disabled
    */
   disabled: 'disabled',
-  expandable: 'expandable',
+  /**
+   * @description hover threshold of expanding options
+   */
   hoverThreshold: 500,
   needAll: false,
 }
