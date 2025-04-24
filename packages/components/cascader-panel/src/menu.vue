@@ -91,7 +91,9 @@ export default defineComponent({
 
     const hoverZone = ref<null | SVGSVGElement>(null)
 
-    const isEmpty = computed(() => !props.nodes.length)
+    const isEmpty = computed(
+      () => !props.nodes.length || props.nodes.every((node) => !node.isVisible)
+    )
     const isLoading = computed(() => !panel.initialLoaded)
     const menuId = computed(() => `${id.value}-${props.index}`)
 
