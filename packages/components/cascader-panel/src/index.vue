@@ -122,14 +122,14 @@ export default defineComponent({
       const cfg = config.value
 
       manualChecked = false
-      store.value = new Store(options, cfg, props.filterNodeMethod)
+      store.value = new Store(options, cfg, ctx, props.filterNodeMethod)
       menus.value = [store.value.getNodes()]
 
       if (cfg.lazy && isEmpty(props.options)) {
         initialLoaded.value = false
         lazyLoad(undefined, (list) => {
           if (list) {
-            store.value = new Store(list, cfg)
+            store.value = new Store(list, cfg, ctx, props.filterNodeMethod)
             menus.value = [store.value.getNodes()]
           }
           initialLoaded.value = true
@@ -361,20 +361,19 @@ export default defineComponent({
       }
     }
 
-    provide(
-      CASCADER_PANEL_INJECTION_KEY,
-      reactive({
-        config,
-        expandingNode,
-        checkedNodes,
-        isHoverMenu,
-        initialLoaded,
-        renderLabelFn,
-        lazyLoad,
-        expandNode,
-        handleCheckChange,
-      })
-    )
+    const ctx = {
+      config,
+      expandingNode,
+      checkedNodes,
+      isHoverMenu,
+      initialLoaded,
+      renderLabelFn,
+      lazyLoad,
+      expandNode,
+      handleCheckChange,
+    }
+
+    provide(CASCADER_PANEL_INJECTION_KEY, reactive(ctx))
 
     watch([config, () => props.options], initStore, {
       deep: true,

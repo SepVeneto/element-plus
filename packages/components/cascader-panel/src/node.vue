@@ -123,7 +123,7 @@ export default defineComponent({
 
     const isInPath = (node: CascaderNode) => {
       const { level, uid } = props.node
-      return node?.pathNodes[level - 1]?.uid === uid
+      return node?.pathNodes?.[level - 1]?.uid === uid
     }
 
     const doExpand = () => {
